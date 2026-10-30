@@ -149,18 +149,19 @@ export const TheoryVaultView: React.FC<TheoryVaultViewProps> = ({
     setAiInputText('');
   };
 
-  const filteredTheories = theories.filter((t) => {
-    if (!search.trim()) return true;
+  const filteredTheories = React.useMemo(() => {
+    if (!search.trim()) return theories;
     const q = search.toLowerCase();
-    return (
-      t.title.toLowerCase().includes(q) ||
-      t.theorist.toLowerCase().includes(q) ||
-      t.source.toLowerCase().includes(q) ||
-      t.quote.toLowerCase().includes(q) ||
-      t.analysis.toLowerCase().includes(q) ||
-      t.tags.some((tag) => tag.toLowerCase().includes(q))
+    return theories.filter(
+      (t) =>
+        t.title.toLowerCase().includes(q) ||
+        t.theorist.toLowerCase().includes(q) ||
+        t.source.toLowerCase().includes(q) ||
+        t.quote.toLowerCase().includes(q) ||
+        t.analysis.toLowerCase().includes(q) ||
+        t.tags.some((tag) => tag.toLowerCase().includes(q))
     );
-  });
+  }, [theories, search]);
 
   return (
     <div className="space-y-6">

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { Timer, Zap, Play, Pause, RotateCcw, ArrowRight, CheckCircle2 } from 'lucide-react';
 import { TheoryCard } from '../types.ts';
 
@@ -17,7 +17,7 @@ export const FocusView: React.FC<FocusViewProps> = ({ onAddTheory, onShowToast }
   const [currentWordIndex, setCurrentWordIndex] = useState(0);
   const rsvpIntervalRef = useRef<any>(null);
 
-  const words = rsvpText.split(/\s+/).filter(Boolean);
+  const words = useMemo(() => rsvpText.split(/\s+/).filter(Boolean), [rsvpText]);
 
   useEffect(() => {
     if (isRsvpRunning) {
@@ -70,6 +70,7 @@ export const FocusView: React.FC<FocusViewProps> = ({ onAddTheory, onShowToast }
             clearInterval(timerIntervalRef.current);
             setIsTimerRunning(false);
             setIsFeynmanPromptOpen(true);
+            onShowToast('🔔 25 dakikalık odaklanma seansı tamamlandı! Feynman özetini çıkarabilirsiniz.');
             return 0;
           }
           return prev - 1;

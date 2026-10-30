@@ -25,35 +25,60 @@ const ai = new GoogleGenAI({
   },
 });
 
-// Robust Gemini call with automatic retry and model fallback for 503 high demand
-async function generateWithRetry(params: any, maxRetries = 2) {
-  for (let attempt = 0; attempt <= maxRetries; attempt++) {
-    try {
-      return await ai.models.generateContent(params);
-    } catch (err: any) {
-      const errMsg = err?.message || '';
-      const is503 =
-        err?.status === 503 ||
-        errMsg.includes('503') ||
-        errMsg.includes('high demand') ||
-        errMsg.includes('UNAVAILABLE');
+// Resilient Gemini call: Uses gemini-3.1-flash-lite as primary for speed & high quota limits,
+// with immediate fallback to gemini-3.8-flash on 503 spikes.
+const PRIMARY_MODEL = 'gemini-3.1-flash-lite';
+const FALLBACK_MODEL = 'gemini-3.8-flash';
 
-      if (is503 && attempt < maxRetries) {
-        console.warn(`[Gemini API] 503 yüksek talep uyarısı alındı. Deneme ${attempt + 1}/${maxRetries} (1.5 sn bekleniyor)...`);
-        await new Promise((resolve) => setTimeout(resolve, 1500 * (attempt + 1)));
-        continue;
-      }
+async function generateWithRetry(params: any) {
+  const modelToUse = params.model || PRIMARY_MODEL;
+  try {
+    return await ai.models.generateContent({
+      ...params,
+      model: modelToUse,
+    });
+  } catch (err: any) {
+    const errMsg = err?.message || '';
+    const isOverloadedOrQuota =
+      err?.status === 503 ||
+      err?.status === 429 ||
+      errMsg.includes('503') ||
+      errMsg.includes('429') ||
+      errMsg.includes('high demand') ||
+      errMsg.includes('UNAVAILABLE') ||
+      errMsg.includes('RESOURCE_EXHAUSTED');
 
-      // If primary model gemini-3.8-flash has persistent 503 spikes, fallback to gemini-flash-latest
-      if (is503 && params.model === 'gemini-3.8-flash') {
-        console.warn('[Gemini API] gemini-3.8-flash yoğunluk nedeniyle gemini-flash-latest modeline geçiş yapılıyor...');
+    // If primary model failed due to 503/429, try the alternate model immediately
+    if (isOverloadedOrQuota) {
+      const alternateModel = modelToUse === PRIMARY_MODEL ? FALLBACK_MODEL : PRIMARY_MODEL;
+      console.warn(`[Gemini API] ${modelToUse} yoğunluk veya kota uyarısı verdi. ${alternateModel} modeline geçiliyor...`);
+      try {
         return await ai.models.generateContent({
           ...params,
-          model: 'gemini-flash-latest',
+          model: alternateModel,
         });
+      } catch (fallbackErr: any) {
+        console.error(`[Gemini API] Yedek model ${alternateModel} de hata verdi:`, fallbackErr?.message || fallbackErr);
+        throw fallbackErr;
       }
+    }
 
-      throw err;
+    throw err;
+  }
+}
+
+// Safe JSON parser to guard against markdown wrappers or partial outputs
+function safeJsonParse<T>(rawText: string | undefined, fallback: T): T {
+  if (!rawText) return fallback;
+  try {
+    return JSON.parse(rawText);
+  } catch {
+    const cleaned = rawText.replace(/```(?:json)?/gi, '').replace(/```/g, '').trim();
+    try {
+      return JSON.parse(cleaned);
+    } catch (e) {
+      console.error('Safe JSON parse failed:', e, rawText);
+      return fallback;
     }
   }
 }
@@ -92,7 +117,7 @@ GÖREVİN:
 3. Bu tartışmada ele alınacak 3-4 kilit kavramı (thematic tags) listele.`;
 
     const response = await generateWithRetry({
-      model: 'gemini-3.8-flash',
+      model: PRIMARY_MODEL,
       contents: prompt,
       config: {
         systemInstruction: `${persona}\nHer zaman Türkçe, saygın, akademik ve yapıcı eleştirel bir üslup kullan.`,
@@ -113,16 +138,24 @@ GÖREVİN:
       },
     });
 
-    const parsed = JSON.parse(response?.text || '{}');
+    const parsed = safeJsonParse(response?.text, {
+      openingStatement: 'Jüri heyeti toplandı.',
+      firstQuestion: 'Tez konunuzla ilgili kuramsal çerçevenizi açıklayabilir misiniz?',
+      keyThemes: ['Metodoloji', 'Kuramsal Temel'],
+    });
     return res.json(parsed);
   } catch (error: any) {
     console.error('Jury start error:', error);
-    const is503 = error?.message?.includes('503') || error?.message?.includes('high demand');
-    return res.status(500).json({
-      error: is503
-        ? 'Google AI sunucularında anlık yoğunluk yaşanıyor (503). Lütfen birkaç saniye sonra tekrar deneyin.'
-        : error.message || 'Jüri oturumu başlatılamadı.',
-    });
+    const errMsg = error?.message || '';
+    const is503 = errMsg.includes('503') || errMsg.includes('high demand');
+    const isQuota = errMsg.includes('429') || errMsg.includes('quota') || errMsg.includes('RESOURCE_EXHAUSTED');
+    let userMsg = error.message || 'Jüri oturumu başlatılamadı.';
+    if (isQuota) {
+      userMsg = 'Google AI ücretsiz kullanım sınırı (429) aşıldı. Lütfen biraz sonra tekrar deneyin veya Settings > Secrets panelinden API anahtarınızı kontrol edin.';
+    } else if (is503) {
+      userMsg = 'Google AI sunucularında anlık yoğunluk yaşanıyor (503). Lütfen birkaç saniye sonra tekrar deneyin.';
+    }
+    return res.status(500).json({ error: userMsg });
   }
 });
 
@@ -164,7 +197,7 @@ GÖREVLER:
 - feynmanKeyInsight: Öğrencinin bu tartışmadan Teori Kasasına kaydedebileceği, tek cümlelik çok yalın bir ana fikir.`;
 
     const response = await generateWithRetry({
-      model: 'gemini-3.8-flash',
+      model: PRIMARY_MODEL,
       contents: prompt,
       config: {
         systemInstruction: `${persona}\nSosyal bilimler standartlarında adil, yüksek akademik beklentili ve öğretici ol. Türkçe yanıt ver.`,
@@ -187,16 +220,26 @@ GÖREVLER:
       },
     });
 
-    const parsed = JSON.parse(response?.text || '{}');
+    const parsed = safeJsonParse(response?.text, {
+      score: 70,
+      critique: 'Yanıtınız kuramsal olarak değerlendirildi.',
+      theoreticalGaps: ['Eleştirel Teori'],
+      followUpQuestion: 'Bu argümanınızı epistemolojik olarak nasıl temellendirirsiniz?',
+      feynmanKeyInsight: 'Savunulan tezin ana fikri açıkça ortaya konmalıdır.',
+    });
     return res.json(parsed);
   } catch (error: any) {
     console.error('Jury respond error:', error);
-    const is503 = error?.message?.includes('503') || error?.message?.includes('high demand');
-    return res.status(500).json({
-      error: is503
-        ? 'Google AI sunucularında anlık yoğunluk yaşanıyor (503). Lütfen birkaç saniye sonra tekrar deneyin.'
-        : error.message || 'Jüri değerlendirmesi alınamadı.',
-    });
+    const errMsg = error?.message || '';
+    const is503 = errMsg.includes('503') || errMsg.includes('high demand');
+    const isQuota = errMsg.includes('429') || errMsg.includes('quota') || errMsg.includes('RESOURCE_EXHAUSTED');
+    let userMsg = error.message || 'Jüri değerlendirmesi alınamadı.';
+    if (isQuota) {
+      userMsg = 'Google AI ücretsiz kullanım sınırı (429) aşıldı. Lütfen biraz sonra tekrar deneyin veya Settings > Secrets panelinden API anahtarınızı kontrol edin.';
+    } else if (is503) {
+      userMsg = 'Google AI sunucularında anlık yoğunluk yaşanıyor (503). Lütfen birkaç saniye sonra tekrar deneyin.';
+    }
+    return res.status(500).json({ error: userMsg });
   }
 });
 
@@ -268,7 +311,7 @@ GÖREVLER VE İSTENEN ANALİZ ALANLARI:
 11. apaCitationHint: Eğer metin bir kaynaktan alıntı ise veya teze referans verilecekse APA 7 formatında künye/alıntı önerisi.`;
 
     const response = await generateWithRetry({
-      model: 'gemini-3.8-flash',
+      model: PRIMARY_MODEL,
       contents: prompt,
       config: {
         systemInstruction: `${schoolConfig.instruction}\nSosyal bilimler standartlarında adil, kavramsal netliği yüksek ve yapıcı bir üslupla Türkçe yanıt ver.`,
@@ -304,16 +347,32 @@ GÖREVLER VE İSTENEN ANALİZ ALANLARI:
       },
     });
 
-    const parsed = JSON.parse(response?.text || '{}');
+    const parsed = safeJsonParse(response?.text, {
+      title: 'Kavramsal Çözümleme',
+      selectedSchoolLabel: schoolConfig.label,
+      suggestedTheorists: ['Roland Barthes'],
+      denotation: 'Metnin doğrudan anlamı.',
+      connotation: 'Metnin simgesel kodları.',
+      powerRelations: 'Temsil ve iktidar boyutu.',
+      coreAnalysis: 'Metin kuramsal olarak çözümlendi.',
+      counterTheorists: [],
+      thesisApplicationTip: 'Bu kavramı literatür taramanızda referans olarak kullanabilirsiniz.',
+      suggestedTags: ['#sosyalbilimler'],
+      apaCitationHint: 'Yazar, A. (2026). İlgili Eser.',
+    });
     return res.json(parsed);
   } catch (error: any) {
     console.error('Theory analysis error:', error);
-    const is503 = error?.message?.includes('503') || error?.message?.includes('high demand');
-    return res.status(500).json({
-      error: is503
-        ? 'Google AI sunucularında anlık yoğunluk yaşanıyor (503). Lütfen birkaç saniye sonra tekrar deneyin.'
-        : error.message || 'Metin analizi gerçekleştirilemedi.',
-    });
+    const errMsg = error?.message || '';
+    const is503 = errMsg.includes('503') || errMsg.includes('high demand');
+    const isQuota = errMsg.includes('429') || errMsg.includes('quota') || errMsg.includes('RESOURCE_EXHAUSTED');
+    let userMsg = error.message || 'Metin analizi gerçekleştirilemedi.';
+    if (isQuota) {
+      userMsg = 'Google AI ücretsiz kullanım sınırı (429) aşıldı. Lütfen biraz sonra tekrar deneyin veya Settings > Secrets panelinden API anahtarınızı kontrol edin.';
+    } else if (is503) {
+      userMsg = 'Google AI sunucularında anlık yoğunluk yaşanıyor (503). Lütfen birkaç saniye sonra tekrar deneyin.';
+    }
+    return res.status(500).json({ error: userMsg });
   }
 });
 

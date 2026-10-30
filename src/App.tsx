@@ -93,9 +93,17 @@ export default function App() {
     }, 2800);
   };
 
+  const safeStore = (key: string, val: string) => {
+    try {
+      localStorage.setItem(key, val);
+    } catch (err) {
+      console.warn(`[SemioCraft Storage] ${key} kaydedilemedi:`, err);
+    }
+  };
+
   // Sync theme with HTML root class
   useEffect(() => {
-    localStorage.setItem(STORAGE_KEYS.THEME, theme);
+    safeStore(STORAGE_KEYS.THEME, theme);
     if (theme === 'dark') {
       document.documentElement.classList.add('dark');
     } else {
@@ -103,21 +111,21 @@ export default function App() {
     }
   }, [theme]);
 
-  // Persist states to LocalStorage
+  // Persist states to LocalStorage with quota protection
   useEffect(() => {
-    localStorage.setItem(STORAGE_KEYS.EXAMS, JSON.stringify(exams));
+    safeStore(STORAGE_KEYS.EXAMS, JSON.stringify(exams));
   }, [exams]);
 
   useEffect(() => {
-    localStorage.setItem(STORAGE_KEYS.COURSES, JSON.stringify(courses));
+    safeStore(STORAGE_KEYS.COURSES, JSON.stringify(courses));
   }, [courses]);
 
   useEffect(() => {
-    localStorage.setItem(STORAGE_KEYS.THEORIES, JSON.stringify(theories));
+    safeStore(STORAGE_KEYS.THEORIES, JSON.stringify(theories));
   }, [theories]);
 
   useEffect(() => {
-    localStorage.setItem(STORAGE_KEYS.JURY, JSON.stringify(jurySessions));
+    safeStore(STORAGE_KEYS.JURY, JSON.stringify(jurySessions));
   }, [jurySessions]);
 
   const toggleTheme = () => {
@@ -127,7 +135,7 @@ export default function App() {
   // JSON Data Export
   const handleExportData = () => {
     const data = {
-      version: 'SemioCraft v4.0',
+      version: 'SemioCraft v4.1',
       exportedAt: new Date().toISOString(),
       exams,
       courses,
@@ -145,7 +153,7 @@ export default function App() {
     showToast('Tüm akademik arşiv JSON olarak indirildi.');
   };
 
-  // JSON Data Import
+  // JSON Data Import with Array Validation & Toast Feedback
   const handleImportData = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -154,19 +162,19 @@ export default function App() {
     reader.onload = (evt) => {
       try {
         const parsed = JSON.parse(evt.target?.result as string);
-        if (parsed.exams && parsed.courses && parsed.theories) {
+        if (Array.isArray(parsed.exams) && Array.isArray(parsed.courses) && Array.isArray(parsed.theories)) {
           setExams(parsed.exams);
           setCourses(parsed.courses);
           setTheories(parsed.theories);
-          if (parsed.jurySessions) setJurySessions(parsed.jurySessions);
+          if (Array.isArray(parsed.jurySessions)) setJurySessions(parsed.jurySessions);
           if (parsed.courses.length > 0) setActiveCourseId(parsed.courses[0].id);
           if (parsed.jurySessions?.length > 0) setActiveJurySessionId(parsed.jurySessions[0].id);
           showToast('Yedek başarıyla geri yüklendi!');
         } else {
-          alert('Geçersiz SemioCraft yedek formatı.');
+          showToast('Geçersiz veya bozuk SemioCraft yedek dosyası.');
         }
       } catch (err: any) {
-        alert('Dosya okuma hatası: ' + err.message);
+        showToast('Dosya okuma hatası: ' + (err.message || 'Bilinmeyen hata'));
       }
     };
     reader.readAsText(file);

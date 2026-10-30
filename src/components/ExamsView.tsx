@@ -24,6 +24,13 @@ export const ExamsView: React.FC<ExamsViewProps> = ({
   const [todoInputs, setTodoInputs] = useState<Record<string, string>>({});
   const [deleteTarget, setDeleteTarget] = useState<{ id: string; title: string } | null>(null);
 
+  // Live ticker to keep countdowns accurate in real time
+  const [, setTick] = useState(0);
+  React.useEffect(() => {
+    const timer = setInterval(() => setTick((t) => t + 1), 30000);
+    return () => clearInterval(timer);
+  }, []);
+
   // New exam form state
   const [title, setTitle] = useState('');
   const [code, setCode] = useState('');

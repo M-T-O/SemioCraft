@@ -82,15 +82,17 @@ export const CoursesView: React.FC<CoursesViewProps> = ({
     });
   };
 
-  const filteredEntries = (activeCourse?.entries || []).filter((ent) => {
-    if (!searchTerm.trim()) return true;
+  const filteredEntries = React.useMemo(() => {
+    const entries = activeCourse?.entries || [];
+    if (!searchTerm.trim()) return entries;
     const q = searchTerm.toLowerCase();
-    return (
-      ent.title.toLowerCase().includes(q) ||
-      ent.content.toLowerCase().includes(q) ||
-      ent.date.includes(q)
+    return entries.filter(
+      (ent) =>
+        ent.title.toLowerCase().includes(q) ||
+        ent.content.toLowerCase().includes(q) ||
+        ent.date.includes(q)
     );
-  });
+  }, [activeCourse?.entries, searchTerm]);
 
   return (
     <div className="space-y-6">
