@@ -1,0 +1,6 @@
+{
+  "name": "SemioCraft",
+  "description": "Sosyal Bilimler ve İletişim Fakültesi için Sokratik Tez Jürisi, Ders Notları ve Teori Çalışma İstasyonu.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

@@ -1,0 +1,2150 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SemioCraft — Sosyal Bilimler Teori & Sınav Pusulası</title>
+  <style>
+    :root {
+      --bg: #0d0f17;
+      --surface: #151926;
+      --surface-hover: #1c2235;
+      --surface-border: #262e45;
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+      --text-dim: #64748b;
+      --accent: #8b5cf6;
+      --accent-light: #a78bfa;
+      --accent-glow: rgba(139, 92, 246, 0.15);
+      --secondary: #06b6d4;
+      --warning: #f59e0b;
+      --success: #10b981;
+      --danger: #ef4444;
+      --radius-sm: 6px;
+      --radius-md: 10px;
+      --radius-lg: 16px;
+      --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font-sans);
+      line-height: 1.5;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* HEADER */
+    header {
+      background: rgba(13, 15, 23, 0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--surface-border);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      padding: 0.85rem 1.75rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .brand-logo {
+      width: 36px;
+      height: 36px;
+      background: linear-gradient(135deg, var(--accent), var(--secondary));
+      border-radius: var(--radius-sm);
+      display: grid;
+      place-items: center;
+      font-weight: 800;
+      font-size: 1.15rem;
+      color: white;
+      box-shadow: 0 0 15px var(--accent-glow);
+    }
+
+    .brand-title {
+      font-weight: 700;
+      font-size: 1.15rem;
+      letter-spacing: -0.02em;
+      display: flex;
+      align-items: baseline;
+      gap: 0.4rem;
+    }
+
+    .brand-badge {
+      font-size: 0.65rem;
+      padding: 0.15rem 0.45rem;
+      border-radius: 99px;
+      background: rgba(139, 92, 246, 0.2);
+      color: var(--accent-light);
+      border: 1px solid rgba(139, 92, 246, 0.4);
+      font-family: var(--font-mono);
+      font-weight: 600;
+    }
+
+    .nav-tabs {
+      display: flex;
+      gap: 0.35rem;
+      background: var(--surface);
+      padding: 0.25rem;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--surface-border);
+      flex-wrap: wrap;
+    }
+
+    .tab-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      padding: 0.5rem 1rem;
+      font-size: 0.86rem;
+      font-weight: 600;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.45rem;
+      transition: all 0.2s ease;
+    }
+
+    .tab-btn:hover {
+      color: var(--text);
+      background: rgba(255, 255, 255, 0.04);
+    }
+
+    .tab-btn.active {
+      background: var(--accent);
+      color: #ffffff;
+      box-shadow: 0 2px 10px rgba(139, 92, 246, 0.35);
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .btn-icon {
+      background: var(--surface);
+      border: 1px solid var(--surface-border);
+      color: var(--text-muted);
+      width: 36px;
+      height: 36px;
+      border-radius: var(--radius-sm);
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-icon:hover {
+      color: var(--text);
+      border-color: var(--accent);
+    }
+
+    /* MAIN CONTAINER */
+    main {
+      flex: 1;
+      max-width: 1360px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 2rem 1.5rem;
+    }
+
+    .tab-content {
+      display: none;
+      animation: fadeIn 0.25s ease forwards;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* SECTION HEADERS */
+    .view-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      margin-bottom: 1.75rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid var(--surface-border);
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .view-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+
+    .view-desc {
+      color: var(--text-muted);
+      font-size: 0.88rem;
+      margin-top: 0.2rem;
+    }
+
+    /* BUTTONS */
+    .btn {
+      background: var(--accent);
+      color: #ffffff;
+      border: none;
+      padding: 0.6rem 1.15rem;
+      border-radius: var(--radius-sm);
+      font-size: 0.88rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: all 0.2s;
+    }
+
+    .btn:hover {
+      background: var(--accent-light);
+      transform: translateY(-1px);
+    }
+
+    .btn-secondary {
+      background: var(--surface);
+      color: var(--text);
+      border: 1px solid var(--surface-border);
+    }
+
+    .btn-secondary:hover {
+      background: var(--surface-hover);
+      border-color: var(--text-dim);
+    }
+
+    .btn-sm {
+      padding: 0.35rem 0.75rem;
+      font-size: 0.8rem;
+    }
+
+    .btn-danger {
+      background: rgba(239, 68, 68, 0.15);
+      color: var(--danger);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+    }
+
+    .btn-danger:hover {
+      background: var(--danger);
+      color: white;
+    }
+
+    /* FORMS */
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+
+    .form-label {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+
+    .form-input, .form-textarea, .form-select {
+      background: #090b12;
+      border: 1px solid var(--surface-border);
+      border-radius: var(--radius-sm);
+      color: var(--text);
+      padding: 0.65rem 0.85rem;
+      font-family: inherit;
+      font-size: 0.9rem;
+      transition: border-color 0.2s;
+    }
+
+    .form-input:focus, .form-textarea:focus, .form-select:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
+
+    .form-textarea {
+      resize: vertical;
+      min-height: 85px;
+    }
+
+    /* =========================================================
+       TAB 1: SINAV PROGRAMLARI & SADE TO-DO LİSTESİ
+       ========================================================= */
+    .exams-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(420px, 1fr));
+      gap: 1.75rem;
+    }
+
+    .exam-card {
+      background: var(--surface);
+      border: 1px solid var(--surface-border);
+      border-radius: var(--radius-lg);
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+      position: relative;
+    }
+
+    .exam-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 1rem;
+      border-bottom: 1px solid var(--surface-border);
+      padding-bottom: 1rem;
+    }
+
+    .exam-title-badge {
+      font-size: 0.72rem;
+      font-family: var(--font-mono);
+      font-weight: 700;
+      padding: 0.15rem 0.5rem;
+      border-radius: var(--radius-sm);
+      background: rgba(245, 158, 11, 0.15);
+      color: var(--warning);
+      border: 1px solid rgba(245, 158, 11, 0.3);
+      display: inline-block;
+      margin-bottom: 0.3rem;
+    }
+
+    .exam-name {
+      font-size: 1.22rem;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+    }
+
+    .exam-datetime {
+      font-size: 0.84rem;
+      color: var(--text-dim);
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      margin-top: 0.25rem;
+    }
+
+    .exam-countdown-box {
+      background: #090b12;
+      border: 1px solid var(--surface-border);
+      padding: 0.6rem 0.9rem;
+      border-radius: var(--radius-sm);
+      text-align: right;
+      min-width: 130px;
+    }
+
+    .exam-countdown-val {
+      font-size: 1.05rem;
+      font-weight: 800;
+      font-family: var(--font-mono);
+      color: var(--accent-light);
+    }
+
+    .exam-countdown-lbl {
+      font-size: 0.65rem;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .progress-bar-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+    }
+
+    .progress-bar-track {
+      height: 8px;
+      background: #090b12;
+      border-radius: 99px;
+      overflow: hidden;
+      border: 1px solid var(--surface-border);
+    }
+
+    .progress-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--accent), var(--secondary));
+      width: 0%;
+      transition: width 0.3s ease;
+    }
+
+    .progress-meta {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.75rem;
+      color: var(--text-dim);
+    }
+
+    .todo-section {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      flex: 1;
+    }
+
+    .todo-input-bar {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .todo-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+      max-height: 380px;
+      overflow-y: auto;
+      padding-right: 0.2rem;
+    }
+
+    /* SADE TO-DO ITEM (PRATİK/TEORİ KALDIRILDI) */
+    .todo-item {
+      background: #090b12;
+      border: 1px solid rgba(255, 255, 255, 0.04);
+      padding: 0.65rem 0.85rem;
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      transition: all 0.15s;
+    }
+
+    .todo-item:hover {
+      border-color: var(--surface-border);
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    .todo-item.completed {
+      opacity: 0.5;
+    }
+
+    .todo-item.completed .todo-text {
+      text-decoration: line-through;
+      color: var(--text-dim);
+    }
+
+    .todo-checkbox {
+      width: 18px;
+      height: 18px;
+      accent-color: var(--accent);
+      cursor: pointer;
+    }
+
+    .todo-text {
+      flex: 1;
+      font-size: 0.88rem;
+      line-height: 1.35;
+    }
+
+    .btn-del-mini {
+      background: transparent;
+      border: none;
+      color: var(--text-dim);
+      cursor: pointer;
+      padding: 0.2rem 0.4rem;
+      display: grid;
+      place-items: center;
+      border-radius: 3px;
+      transition: color 0.15s;
+      font-size: 0.9rem;
+    }
+
+    .btn-del-mini:hover {
+      color: var(--danger);
+    }
+
+    /* =========================================================
+       TAB 2: DERSLER VE NOTLAR (YENİ BÖLÜM)
+       ========================================================= */
+    .courses-layout {
+      display: grid;
+      grid-template-columns: 320px 1fr;
+      gap: 1.75rem;
+    }
+
+    @media (max-width: 900px) {
+      .courses-layout {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .courses-sidebar {
+      background: var(--surface);
+      border: 1px solid var(--surface-border);
+      border-radius: var(--radius-lg);
+      padding: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      height: fit-content;
+    }
+
+    .courses-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .course-pill {
+      background: #090b12;
+      border: 1px solid rgba(255, 255, 255, 0.04);
+      padding: 0.85rem 1rem;
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: all 0.2s;
+    }
+
+    .course-pill:hover {
+      border-color: rgba(139, 92, 246, 0.4);
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    .course-pill.active {
+      border-color: var(--accent);
+      background: rgba(139, 92, 246, 0.12);
+      box-shadow: 0 0 15px rgba(139, 92, 246, 0.15);
+    }
+
+    .course-pill-name {
+      font-weight: 700;
+      font-size: 0.95rem;
+      color: var(--text);
+    }
+
+    .course-pill-code {
+      font-size: 0.75rem;
+      color: var(--accent-light);
+      font-family: var(--font-mono);
+      font-weight: 600;
+    }
+
+    .course-notes-panel {
+      background: var(--surface);
+      border: 1px solid var(--surface-border);
+      border-radius: var(--radius-lg);
+      padding: 1.75rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+      min-height: 500px;
+    }
+
+    .course-panel-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--surface-border);
+      padding-bottom: 1.25rem;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+    }
+
+    .entries-accordion {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    /* GİRDİ BAŞLIĞI VE GİRDİ TARİHİ İLE AYRILMIŞ AKORDİYON */
+    .note-entry-item {
+      background: #090b12;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      transition: border-color 0.2s;
+    }
+
+    .note-entry-item:hover {
+      border-color: rgba(139, 92, 246, 0.35);
+    }
+
+    .note-entry-header {
+      padding: 1rem 1.25rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+      user-select: none;
+      gap: 1rem;
+      background: rgba(255, 255, 255, 0.015);
+    }
+
+    .note-entry-header:hover {
+      background: rgba(255, 255, 255, 0.03);
+    }
+
+    .note-entry-title {
+      font-weight: 700;
+      font-size: 1rem;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .note-entry-date {
+      font-size: 0.78rem;
+      color: var(--text-dim);
+      font-family: var(--font-mono);
+      background: rgba(255, 255, 255, 0.04);
+      padding: 0.2rem 0.55rem;
+      border-radius: var(--radius-sm);
+      white-space: nowrap;
+    }
+
+    .note-entry-chevron {
+      color: var(--accent-light);
+      font-size: 0.8rem;
+      transition: transform 0.2s ease;
+    }
+
+    .note-entry-item.expanded .note-entry-chevron {
+      transform: rotate(180deg);
+    }
+
+    .note-entry-body {
+      display: none;
+      padding: 1.25rem;
+      border-top: 1px solid var(--surface-border);
+      background: #06070c;
+      font-size: 0.92rem;
+      color: #e2e8f0;
+      line-height: 1.65;
+      white-space: pre-wrap;
+    }
+
+    .note-entry-item.expanded .note-entry-body {
+      display: block;
+      animation: fadeIn 0.2s ease;
+    }
+
+    .note-entry-footer {
+      display: flex;
+      justify-content: flex-end;
+      padding-top: 0.75rem;
+      margin-top: 0.75rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    /* =========================================================
+       TAB 3: TEORİ VE ALINTILAR KASASI (YENİLENMİŞ)
+       ========================================================= */
+    .grid-theory {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .theory-card {
+      background: var(--surface);
+      border: 1px solid var(--surface-border);
+      border-radius: var(--radius-md);
+      padding: 1.4rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      transition: all 0.2s ease;
+    }
+
+    .theory-card:hover {
+      border-color: rgba(139, 92, 246, 0.45);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px -4px rgba(0, 0, 0, 0.5);
+    }
+
+    .theorist-badge {
+      background: rgba(139, 92, 246, 0.15);
+      color: var(--accent-light);
+      border: 1px solid rgba(139, 92, 246, 0.35);
+      font-size: 0.76rem;
+      font-weight: 700;
+      padding: 0.2rem 0.6rem;
+      border-radius: var(--radius-sm);
+      display: inline-block;
+    }
+
+    .theory-title {
+      font-size: 1.15rem;
+      font-weight: 700;
+      line-height: 1.35;
+      color: var(--text);
+    }
+
+    .theory-source {
+      font-size: 0.8rem;
+      color: var(--text-dim);
+      font-family: var(--font-mono);
+      margin-top: 0.2rem;
+    }
+
+    .quote-box {
+      background: rgba(0, 0, 0, 0.3);
+      border-left: 3px solid var(--accent);
+      padding: 0.85rem 1rem;
+      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+      font-size: 0.9rem;
+      font-style: italic;
+      color: #e2e8f0;
+      line-height: 1.55;
+    }
+
+    .commentary-box {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.04);
+      padding: 0.75rem 0.9rem;
+      border-radius: var(--radius-sm);
+      font-size: 0.84rem;
+      color: var(--text-muted);
+      line-height: 1.45;
+    }
+
+    .commentary-label {
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--secondary);
+      margin-bottom: 0.25rem;
+    }
+
+    .tag-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.35rem;
+      margin-top: auto;
+    }
+
+    .tag-item {
+      font-size: 0.72rem;
+      color: var(--text-dim);
+      background: var(--surface-hover);
+      padding: 0.15rem 0.5rem;
+      border-radius: var(--radius-sm);
+    }
+
+    /* =========================================================
+       TAB 4: OKUMA & FEYNMAN ODAKLAYICI
+       ========================================================= */
+    .focus-layout {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+    }
+
+    @media (max-width: 900px) {
+      .focus-layout {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .focus-box {
+      background: var(--surface);
+      border: 1px solid var(--surface-border);
+      border-radius: var(--radius-lg);
+      padding: 1.75rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+    }
+
+    .focus-title {
+      font-size: 1.15rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .rsvp-display {
+      background: #07090e;
+      border: 1px solid var(--surface-border);
+      border-radius: var(--radius-md);
+      height: 160px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+      text-align: center;
+    }
+
+    .rsvp-word {
+      font-size: 2.2rem;
+      font-weight: 800;
+      font-family: var(--font-mono);
+      color: var(--accent-light);
+    }
+
+    .rsvp-controls {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .timer-face {
+      text-align: center;
+      padding: 1.5rem 0;
+    }
+
+    .timer-digits {
+      font-size: 3.8rem;
+      font-weight: 800;
+      font-family: var(--font-mono);
+      color: var(--text);
+    }
+
+    .feynman-prompt-box {
+      background: rgba(139, 92, 246, 0.08);
+      border: 1px solid rgba(139, 92, 246, 0.25);
+      border-radius: var(--radius-md);
+      padding: 1rem;
+      display: none;
+      flex-direction: column;
+      gap: 0.75rem;
+      animation: fadeIn 0.3s ease;
+    }
+
+    /* MODAL */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.8);
+      backdrop-filter: blur(8px);
+      z-index: 200;
+      display: none;
+      place-items: center;
+      padding: 1.5rem;
+    }
+
+    .modal-backdrop.open {
+      display: grid;
+    }
+
+    .modal {
+      background: var(--surface);
+      border: 1px solid var(--surface-border);
+      border-radius: var(--radius-lg);
+      max-width: 580px;
+      width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .modal-header {
+      padding: 1.25rem 1.5rem;
+      border-bottom: 1px solid var(--surface-border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .modal-body {
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.2rem;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 3.5rem 1.5rem;
+      color: var(--text-dim);
+      grid-column: 1 / -1;
+    }
+
+    .empty-icon {
+      font-size: 2.5rem;
+      margin-bottom: 0.75rem;
+      opacity: 0.6;
+    }
+
+    footer {
+      border-top: 1px solid var(--surface-border);
+      padding: 1.25rem 2rem;
+      margin-top: auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: var(--text-dim);
+      font-size: 0.8rem;
+    }
+
+    .stage2-badge {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: rgba(139, 92, 246, 0.1);
+      border: 1px solid rgba(139, 92, 246, 0.25);
+      padding: 0.3rem 0.65rem;
+      border-radius: var(--radius-sm);
+      color: var(--accent-light);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header>
+    <div class="brand">
+      <div class="brand-logo">§</div>
+      <div class="brand-title">
+        SemioCraft
+        <span class="brand-badge">ÇEVRİMDIŞI · SÖZLÜ & METİNSEL</span>
+      </div>
+    </div>
+
+    <!-- TABS -->
+    <nav class="nav-tabs">
+      <button class="tab-btn active" onclick="switchTab('exams')">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        Sınav & Teslim Programları
+      </button>
+      <button class="tab-btn" onclick="switchTab('courses')">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+        Dersler ve Notlar
+      </button>
+      <button class="tab-btn" onclick="switchTab('vault')">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+        Teori ve Alıntılar Kasası
+      </button>
+      <button class="tab-btn" onclick="switchTab('focus')">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        Okuma & Feynman Odaklayıcı
+      </button>
+    </nav>
+
+    <!-- ACTIONS -->
+    <div class="header-actions">
+      <button class="btn-icon" title="JSON Olarak Dışa Aktar" onclick="exportData()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+      </button>
+      <button class="btn-icon" title="Yedek Yükle" onclick="document.getElementById('importFileInput').click()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+      </button>
+      <input type="file" id="importFileInput" accept=".json" style="display:none" onchange="importData(event)">
+    </div>
+  </header>
+
+  <!-- MAIN APP -->
+  <main>
+
+    <!-- =========================================================
+         TAB 1: SINAV & TESLİM PROGRAMLARI (SADE TO-DO LİSTESİ)
+         ========================================================= -->
+    <section id="tab-exams" class="tab-content active">
+      <div class="view-header">
+        <div>
+          <h1 class="view-title">Sınav & Jüri Teslim Programları</h1>
+          <p class="view-desc">Kendi vize/final veya jüri hedefinizi oluşturun; altına özel tiklenebilir yapılacaklar listenizi yazın.</p>
+        </div>
+        <button class="btn" onclick="openNewExamModal()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          Yeni Sınav Programı Oluştur
+        </button>
+      </div>
+
+      <div id="examsContainer" class="exams-grid"></div>
+    </section>
+
+    <!-- =========================================================
+         TAB 2: DERSLER VE NOTLAR (YENİ BÖLÜM - GİRDİ BAŞLIĞI VE TARİHİ)
+         ========================================================= -->
+    <section id="tab-courses" class="tab-content">
+      <div class="view-header">
+        <div>
+          <h1 class="view-title">Dersler ve Notlar</h1>
+          <p class="view-desc">Aldığınız dersleri tanımlayın; altındaki ders notlarını sayfa kalabalığı olmadan girdi başlıklarına tıklayarak okuyun.</p>
+        </div>
+        <div style="display:flex; gap:0.5rem;">
+          <button class="btn btn-secondary" onclick="openNewCourseModal()">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Yeni Ders Ekle
+          </button>
+          <button class="btn" onclick="openNewNoteModal()">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Bu Derse Not / Girdi Ekle
+          </button>
+        </div>
+      </div>
+
+      <div class="courses-layout">
+        <!-- SOL: DERS SEÇİM LİSTESİ -->
+        <div class="courses-sidebar">
+          <div style="font-size:0.8rem; font-weight:700; color:var(--text-dim); text-transform:uppercase; letter-spacing:0.04em;">Kayıtlı Dersler</div>
+          <div class="courses-list" id="coursesList"></div>
+        </div>
+
+        <!-- SAĞ: SEÇİLİ DERSİN NOTLARI (GİRDİ BAŞLIKLARIYLA AKORDİYON) -->
+        <div class="course-notes-panel">
+          <div class="course-panel-header">
+            <div>
+              <span id="activeCourseCode" style="font-size:0.75rem; font-family:var(--font-mono); font-weight:700; color:var(--accent-light);">GİT501</span>
+              <h2 id="activeCourseName" style="font-size:1.3rem; font-weight:700; margin-top:0.2rem;">Görsel Kültür ve Eleştirel Teori</h2>
+            </div>
+            <button class="btn btn-danger btn-sm" onclick="deleteActiveCourse()">Dersi Sil</button>
+          </div>
+
+          <!-- DERS NOTLARI İÇİNDE HIZLI ARAMA -->
+          <div style="margin-bottom:0.25rem;">
+            <input type="text" id="noteSearchInput" class="form-input" placeholder="Bu derse ait notlarda veya başlıklarda ara..." style="width:100%; font-size:0.86rem;" oninput="renderCourses()">
+          </div>
+
+          <!-- GİRDİ BAŞLIĞI VE TARİHİ İLE DÜZENLENMİŞ LİSTE -->
+          <div class="entries-accordion" id="entriesAccordion"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =========================================================
+         TAB 3: TEORİ VE ALINTILAR KASASI (DROPDOWN KALDIRILDI)
+         ========================================================= -->
+    <section id="tab-vault" class="tab-content">
+      <div class="view-header">
+        <div>
+          <h1 class="view-title">Teori ve Alıntılar Kasası</h1>
+          <p class="view-desc">Sosyal bilim kuramcılarından kitap/makale kesitleri, kavram tanımları ve kişisel analiz notları.</p>
+        </div>
+        <button class="btn" onclick="openTheoryModal()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          Yeni Teori / Alıntı Ekle
+        </button>
+      </div>
+
+      <!-- SADECE GENİŞ ARAMA ÇUBUĞU (DROPDOWN KALDIRILDI) -->
+      <div style="margin-bottom:1.5rem;">
+        <input type="text" id="theorySearch" class="form-input" placeholder="Kuramcı adı, kavram başlığı, alıntı metni veya etiket ara..." style="width:100%; max-width:540px;" oninput="renderVault()">
+      </div>
+
+      <div id="theoryGrid" class="grid-theory"></div>
+    </section>
+
+    <!-- =========================================================
+         TAB 4: OKUMA & FEYNMAN ODAKLAYICI
+         ========================================================= -->
+    <section id="tab-focus" class="tab-content">
+      <div class="view-header">
+        <div>
+          <h1 class="view-title">Okuma & Feynman Odaklayıcı</h1>
+          <p class="view-desc">Ağır akademik metinleri hızlı sindirmek için RSVP okuma motoru ve 25 dakikalık aktif özetleme seansı.</p>
+        </div>
+      </div>
+
+      <div class="focus-layout">
+        <!-- RSVP -->
+        <div class="focus-box">
+          <div class="focus-title">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+            RSVP Hızlı & Odaklı Metin Okuyucu
+          </div>
+          <p style="font-size:0.82rem; color:var(--text-muted);">
+            Uzun bir akademik paragrafı yapıştırın. Kelimeler gözünüzü yormadan ekranda tek tek akarak odaklanmanızı sağlar.
+          </p>
+
+          <div class="rsvp-display">
+            <div id="rsvpWord" class="rsvp-word">Hazır</div>
+          </div>
+
+          <div class="rsvp-controls">
+            <button class="btn btn-sm" id="rsvpBtn" onclick="toggleRsvp()">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+              Okumayı Başlat
+            </button>
+            <select id="rsvpSpeed" class="form-select" style="padding:0.35rem 0.6rem; font-size:0.8rem;">
+              <option value="250">250 Kelime / Dk (Normal)</option>
+              <option value="350" selected>350 Kelime / Dk (Odak)</option>
+              <option value="450">450 Kelime / Dk (Hızlı)</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Okunacak Metin</label>
+            <textarea id="rsvpText" class="form-textarea" placeholder="Okumak istediğiniz tez/kitap kesitini buraya yapıştırın...">Aura, nesnenin biricikliği ve uzaktalığının yarattığı tarihsel mesafedir. Mekanik yeniden üretim çağında sanat yapıtı, aurasından sıyrılarak kitlelerin tüketebileceği bir nesneye dönüşür.</textarea>
+          </div>
+        </div>
+
+        <!-- FEYNMAN TIMER -->
+        <div class="focus-box">
+          <div class="focus-title">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            Feynman Derin Çalışma Seansı
+          </div>
+          <p style="font-size:0.82rem; color:var(--text-muted);">
+            25 dakikalık odaklanmış okuma yapın. Süre dolduğunda okuduğunuzu tek bir cümleyle kendi dilinizde özetleyin.
+          </p>
+
+          <div class="timer-face">
+            <div class="timer-digits" id="timerDigits">25:00</div>
+          </div>
+
+          <div style="display:flex; justify-content:center; gap:0.75rem;">
+            <button class="btn" id="timerStartBtn" onclick="toggleTimer()">
+              Seansı Başlat
+            </button>
+            <button class="btn btn-secondary" onclick="resetTimer()">
+              Sıfırla
+            </button>
+          </div>
+
+          <div class="feynman-prompt-box" id="feynmanBox">
+            <div style="font-weight:700; color:var(--accent-light); font-size:0.9rem;">
+              🔔 Seans Tamamlandı! Feynman Özeti:
+            </div>
+            <p style="font-size:0.8rem; color:var(--text-muted);">
+              "Bu 25 dakikada okuduğun en kritik düşünceyi 10 yaşındaki birine anlatır gibi 2 cümlede açıkla:"
+            </p>
+            <textarea id="feynmanSummaryInput" class="form-textarea" placeholder="Kendi cümlelerinizle özetleyin..."></textarea>
+            <button class="btn btn-sm" onclick="saveFeynmanSummary()">
+              Özeti Teori ve Alıntılar Kasasına Aktar
+            </button>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- MODAL: YENİ SINAV PROGRAMI OLUŞTUR -->
+  <div class="modal-backdrop" id="newExamModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h2 style="font-size:1.15rem; font-weight:700;">Yeni Sınav / Jüri Programı Oluştur</h2>
+        <button class="btn-icon" onclick="closeNewExamModal()">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label class="form-label">Sınav / Jüri / Teslim Başlığı</label>
+          <input type="text" id="exTitle" class="form-input" placeholder="Örn: Görsel Kültür Vize Sınavı veya Tipografi Jüri Teslimi">
+        </div>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.75rem;">
+          <div class="form-group">
+            <label class="form-label">Ders Kodu / Alanı</label>
+            <input type="text" id="exCode" class="form-input" placeholder="Örn: GİT501">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Tarih ve Saat</label>
+            <input type="datetime-local" id="exDate" class="form-input">
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">İlk Yapılacak Görev (To-Do Başlangıcı)</label>
+          <input type="text" id="exFirstTodo" class="form-input" placeholder="Örn: Barthes 1-3. bölümleri oku ve not çıkar">
+        </div>
+        <button class="btn" style="width:100%; justify-content:center; margin-top:0.5rem;" onclick="saveNewExam()">
+          Programı Başlat
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: YENİ DERS EKLE -->
+  <div class="modal-backdrop" id="newCourseModal">
+    <div class="modal" style="max-width:460px;">
+      <div class="modal-header">
+        <h2 style="font-size:1.15rem; font-weight:700;">Yeni Ders Ekle</h2>
+        <button class="btn-icon" onclick="closeNewCourseModal()">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label class="form-label">Ders Kodu</label>
+          <input type="text" id="cCode" class="form-input" placeholder="Örn: İLT514">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Dersin Tam Adı</label>
+          <input type="text" id="cName" class="form-input" placeholder="Örn: İletişim Kuramları ve Medya Sosyolojisi">
+        </div>
+        <button class="btn" style="width:100%; justify-content:center; margin-top:0.5rem;" onclick="saveNewCourse()">
+          Dersi Kaydet
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: YENİ DERS NOTU (GİRDİSİ) EKLE -->
+  <div class="modal-backdrop" id="newNoteModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h2 style="font-size:1.15rem; font-weight:700;">Yeni Ders Notu / Girdi Ekle</h2>
+        <button class="btn-icon" onclick="closeNewNoteModal()">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label class="form-label">Hangi Ders İçin?</label>
+          <select id="nCourseSelect" class="form-select"></select>
+        </div>
+        <div style="display:grid; grid-template-columns:2fr 1fr; gap:0.75rem;">
+          <div class="form-group">
+            <label class="form-label">Girdi Başlığı</label>
+            <input type="text" id="nTitle" class="form-input" placeholder="Örn: Hafta 4: Walter Benjamin ve Auranın Yitimi">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Girdi Tarihi</label>
+            <input type="date" id="nDate" class="form-input">
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Ders Notu İçeriği</label>
+          <textarea id="nContent" class="form-textarea" style="min-height:160px;" placeholder="Bu derste alınan tüm notlar, ana fikirler, hoca vurguları..."></textarea>
+        </div>
+        <button class="btn" style="width:100%; justify-content:center; margin-top:0.5rem;" onclick="saveNewNote()">
+          Notu Kaydet
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: YENİ TEORİ ALINTISI EKLE -->
+  <div class="modal-backdrop" id="theoryModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h2 style="font-size:1.15rem; font-weight:700;">Yeni Teori / Alıntı Ekle</h2>
+        <button class="btn-icon" onclick="closeTheoryModal()">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label class="form-label">Kavram / Konu Başlığı</label>
+          <input type="text" id="thTitle" class="form-input" placeholder="Örn: Mit ve Doğallaştırma Söylemi">
+        </div>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.75rem;">
+          <div class="form-group">
+            <label class="form-label">Kuramcı</label>
+            <input type="text" id="thTheorist" class="form-input" placeholder="Örn: Roland Barthes">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Eser / Kitap / Sayfa</label>
+            <input type="text" id="thSource" class="form-input" placeholder="Örn: Mitolojiler, s. 142">
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Alıntı / Metin Kesiti</label>
+          <textarea id="thQuote" class="form-textarea" placeholder="Kitaptan veya makaleden doğrudan alıntıladığınız söz..."></textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Kavramsal Çözümleme & Senin Yorumun</label>
+          <textarea id="thAnalysis" class="form-textarea" placeholder="Bu kavramı tezinizde veya sınavda nasıl kullanacaksınız? Kendi cümleleriniz..."></textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Etiketler (Virgülle ayırın)</label>
+          <input type="text" id="thTags" class="form-input" placeholder="Örn: #mit, #göstergebilim, #ideoloji">
+        </div>
+        <button class="btn" style="width:100%; justify-content:center;" onclick="saveTheoryCard()">
+          Kasaya Kaydet
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <div>SemioCraft — Sosyal Bilimler & Görsel İletişim Lisansüstü Çalışma Pusulası</div>
+    <div class="stage2-badge">
+      <span>✦ 2. Aşama: Google AI Studio (Gemini Soru Simülatörü & Tez Asistanı)</span>
+    </div>
+  </footer>
+
+  <script>
+    // --- STATE MANAGEMENT ---
+    const STORAGE_KEY = 'semiocraft_v3_clean';
+
+    let appState = {
+      activeCourseId: 'crs_1',
+      exams: [
+        {
+          id: 'ex_1',
+          code: 'GİT501',
+          title: 'Görsel Kültür & Eleştirel Teori Vizesi',
+          date: new Date(Date.now() + (5 * 24 * 60 * 60 * 1000) + (10 * 60 * 60 * 1000)).toISOString(),
+          todos: [
+            { id: 'td_1', text: "Roland Barthes 'Mitolojiler' 1-4. bölümleri oku ve not çıkar", completed: true },
+            { id: 'td_2', text: "Walter Benjamin 'Mekanik Yeniden Üretim Çağında Sanat' makalesi analizi", completed: true },
+            { id: 'td_3', text: "Stuart Hall Kodlama/Kodaçımlama modeli şemasını deftere çiz", completed: false },
+            { id: 'td_4', text: "14:00'te Merkez Kütüphane 2. katta çalışma grubuyla buluş", completed: false },
+            { id: 'td_5', text: "Çıkmış vize sorularını ve kavram listesini gözden geçir", completed: false }
+          ]
+        },
+        {
+          id: 'ex_2',
+          code: 'GİT508',
+          title: 'Yarıyıl Tasarım Jüri Sunumu',
+          date: new Date(Date.now() + (12 * 24 * 60 * 60 * 1000)).toISOString(),
+          todos: [
+            { id: 'td_21', text: "Figma üzerinde afiş tipografi hiyerarşisi gridlerini tamamla", completed: false },
+            { id: 'td_22', text: "Afişin kavramsal metnini (300 kelime) hazırla", completed: false },
+            { id: 'td_23', text: "Mac Laboratuvarında 1/1 prova baskı al", completed: false }
+          ]
+        }
+      ],
+      courses: [
+        {
+          id: 'crs_1',
+          code: 'GİT501',
+          name: 'Görsel Kültür ve Eleştirel Teori',
+          entries: [
+            {
+              id: 'ent_1',
+              title: 'Hafta 3: Frankfurt Okulu, Adorno ve Kültür Endüstrisi',
+              date: '2026-10-18',
+              content: 'Adorno ve Horkheimer, Aydınlanmanın Diyalektiği eserinde kültür endüstrisi kavramını ele alır.\n\nTemel Noktalar:\n1. Standardizasyon: Popüler kültür ürünleri aynı kalıplarla üretilir.\n2. Sahte Bireysellik: Bireye özgür seçim şansı sunuluyormuş gibi yapılırken aslında arzular pazar tarafından üretilir.\n3. Eğlence ve Oyalama: İşçinin yabancılaşmasını unutturmak için bir kaçış mekanizmasıdır.\n\nVize İpucu: Sanatın özerkliği ile metalaşması arasındaki çatışma sorulabilir.'
+            },
+            {
+              id: 'ent_2',
+              title: 'Hafta 4: Walter Benjamin ve Auranın Yitimi',
+              date: '2026-10-25',
+              content: 'Mekanik yeniden üretim çağı:\n- Sanat yapıtının biricikliği (aurası) çoğaltılabilirlik karşısında çözülür.\n- Bu durum bir yandan elitist sanat tapıncını yok ederken, diğer yandan imajları faşist veya kapitalist manipülasyona açık hale getirir.\n- Çözüm: Sanatın ritüel yerine politikaya yaslanması.'
+            }
+          ]
+        },
+        {
+          id: 'crs_2',
+          code: 'GİT508',
+          name: 'İleri Tipografi ve Görsel Hiyerarşi',
+          entries: [
+            {
+              id: 'ent_3',
+              title: 'Hafta 2: İsviçre Tipografisi ve Grid Sistemleri',
+              date: '2026-10-12',
+              content: 'Josef Müller-Brockmann grid mantığı:\n- Sayfada bilginin rasyonel ve nesnel akışı.\n- Asimetrik denge ve negatif alanın nefes aldırma gücü.\n- Jüri tesliminde ana başlık ile gövde metni puntoları arasında en az 3 kat hiyerarşi korunacak.'
+            }
+          ]
+        }
+      ],
+      theories: [
+        {
+          id: 'th_1',
+          title: 'Mit ve Doğallaştırma Söylemi',
+          theorist: 'Roland Barthes',
+          source: 'Mitolojiler (Mythologies), s. 78',
+          quote: 'Mit, şeyleri yok etmez; sadece onları arındırır, masumlaştırır ve tarihsellikten koparıp doğallaştırır.',
+          analysis: 'Reklamların ve medya dilinin toplumsal kabulleri sanki evrensel bir doğa kanunuymuş gibi hissettirmesini açıklar.',
+          tags: ['#mit', '#göstergebilim', '#masumlaştırma']
+        },
+        {
+          id: 'th_2',
+          title: 'Aura ve Mekanik Yeniden Üretim',
+          theorist: 'Walter Benjamin',
+          source: 'Tekniğin Olanaklarıyla Çoğaltılabildiği Çağda Sanat Yapıtı, s. 44',
+          quote: 'Sanat yapıtının mekanik olarak çoğaltılabilirliği çağında solup giden şey, onun aurasıdır.',
+          analysis: 'Dijitalleşme ile kopyalanan imajların biricikliğini yitirmesi ve ritüelden çıkıp siyasete/tüketime evrilmesi.',
+          tags: ['#aura', '#özgünlük', '#kitlekültürü']
+        },
+        {
+          id: 'th_3',
+          title: 'Mülkiyet ve Görme Biçimleri',
+          theorist: 'John Berger',
+          source: 'Görme Biçimleri (Ways of Seeing), s. 84',
+          quote: 'Yağlıboya resim, sahibine sahip olduğu şeyleri yeniden üretip gösteren bir aynadır.',
+          analysis: 'Görsel kültür ile kapitalizm arasındaki bağ; imajın sahip olma arzusunu tetikleme biçimi.',
+          tags: ['#mülkiyet', '#kapitalizm', '#bakış']
+        }
+      ]
+    };
+
+    function loadState() {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (saved) {
+        try {
+          appState = JSON.parse(saved);
+        } catch (e) {
+          console.error("Yükleme hatası:", e);
+        }
+      } else {
+        saveState();
+      }
+    }
+
+    function saveState() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(appState));
+    }
+
+    // --- TAB SWITCHER ---
+    function switchTab(tabId) {
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+
+      const targetBtn = Array.from(document.querySelectorAll('.tab-btn')).find(btn => btn.getAttribute('onclick').includes(tabId));
+      if (targetBtn) targetBtn.classList.add('active');
+
+      const targetContent = document.getElementById(`tab-${tabId}`);
+      if (targetContent) targetContent.classList.add('active');
+
+      if (tabId === 'exams') renderExams();
+      if (tabId === 'courses') renderCourses();
+      if (tabId === 'vault') renderVault();
+    }
+
+    // =========================================================
+    // 1. SINAV VE TO-DO LİSTESİ (PRATİK/TEORİ KALDIRILDI)
+    // =========================================================
+    function openNewExamModal() {
+      document.getElementById('exTitle').value = '';
+      document.getElementById('exCode').value = '';
+      document.getElementById('exDate').value = '';
+      document.getElementById('exFirstTodo').value = '';
+      document.getElementById('newExamModal').classList.add('open');
+    }
+
+    function closeNewExamModal() {
+      document.getElementById('newExamModal').classList.remove('open');
+    }
+
+    function saveNewExam() {
+      const title = document.getElementById('exTitle').value.trim();
+      const code = document.getElementById('exCode').value.trim() || 'DERS';
+      const dateVal = document.getElementById('exDate').value;
+      const firstTodo = document.getElementById('exFirstTodo').value.trim();
+
+      if (!title || !dateVal) {
+        alert("Lütfen sınav başlığı ve tarihini seçiniz.");
+        return;
+      }
+
+      const newExam = {
+        id: 'ex_' + Date.now(),
+        title,
+        code,
+        date: new Date(dateVal).toISOString(),
+        todos: []
+      };
+
+      if (firstTodo) {
+        newExam.todos.push({
+          id: 'td_' + Date.now(),
+          text: firstTodo,
+          completed: false
+        });
+      }
+
+      appState.exams.unshift(newExam);
+      saveState();
+      closeNewExamModal();
+      renderExams();
+    }
+
+    function deleteExam(examId) {
+      if (confirm("Bu sınav programını ve içindeki tüm görevleri silmek istediğinize emin misiniz?")) {
+        appState.exams = appState.exams.filter(e => e.id !== examId);
+        saveState();
+        renderExams();
+      }
+    }
+
+    function addTodo(examId) {
+      const input = document.getElementById(`todoInput_${examId}`);
+      const text = input.value.trim();
+      if (!text) return;
+
+      const exam = appState.exams.find(e => e.id === examId);
+      if (exam) {
+        exam.todos.push({
+          id: 'td_' + Date.now(),
+          text: text,
+          completed: false
+        });
+        saveState();
+        renderExams();
+      }
+    }
+
+    function toggleTodo(examId, todoId) {
+      const exam = appState.exams.find(e => e.id === examId);
+      if (exam) {
+        const todo = exam.todos.find(t => t.id === todoId);
+        if (todo) {
+          todo.completed = !todo.completed;
+          saveState();
+          renderExams();
+        }
+      }
+    }
+
+    function deleteTodo(examId, todoId) {
+      const exam = appState.exams.find(e => e.id === examId);
+      if (exam) {
+        exam.todos = exam.todos.filter(t => t.id !== todoId);
+        saveState();
+        renderExams();
+      }
+    }
+
+    function getTimeRemaining(targetIso) {
+      const diff = new Date(targetIso).getTime() - Date.now();
+      if (diff <= 0) return "Süre Doldu!";
+      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      return `${days} gün ${hours} saat kaldı`;
+    }
+
+    function renderExams() {
+      const container = document.getElementById('examsContainer');
+      if (appState.exams.length === 0) {
+        container.innerHTML = `
+          <div class="empty-state">
+            <div class="empty-icon">📅</div>
+            <h3>Henüz Bir Sınav Programı Oluşturulmadı</h3>
+            <p>Yukarıdaki "+ Yeni Sınav Programı Oluştur" butonuna basarak ilk vize veya jüri hedefinizi ve to-do listenizi belirleyin.</p>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = appState.exams.map(ex => {
+        const total = ex.todos.length;
+        const completed = ex.todos.filter(t => t.completed).length;
+        const percent = total > 0 ? Math.round((completed / total) * 100) : 0;
+        const dateFormatted = new Date(ex.date).toLocaleDateString('tr-TR', { day: 'numeric', month: 'long', weekday: 'short', hour: '2-digit', minute: '2-digit' });
+
+        return `
+          <div class="exam-card">
+            <div class="exam-card-header">
+              <div>
+                <span class="exam-title-badge">${ex.code}</span>
+                <h2 class="exam-name">${ex.title}</h2>
+                <div class="exam-datetime">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                  ${dateFormatted}
+                </div>
+              </div>
+              <div class="exam-countdown-box">
+                <div class="exam-countdown-val">${getTimeRemaining(ex.date)}</div>
+                <div class="exam-countdown-lbl">Kalan Süre</div>
+              </div>
+            </div>
+
+            <!-- PROGRESS BAR -->
+            <div class="progress-bar-wrap">
+              <div class="progress-meta">
+                <span>Hazırlık İlerlemesi</span>
+                <span style="font-family:var(--font-mono); font-weight:700; color:var(--accent-light);">${completed}/${total} Görev (%${percent})</span>
+              </div>
+              <div class="progress-bar-track">
+                <div class="progress-bar-fill" style="width:${percent}%;"></div>
+              </div>
+            </div>
+
+            <!-- TO-DO SECTION (SADE: PRATİK/TEORİ ETİKETLERİ YOK) -->
+            <div class="todo-section">
+              <div class="todo-input-bar">
+                <input type="text" id="todoInput_${ex.id}" class="form-input" placeholder="Bu sınav için yeni bir görev/not yaz..." onkeydown="if(event.key==='Enter') addTodo('${ex.id}')">
+                <button class="btn btn-sm" onclick="addTodo('${ex.id}')">+ Ekle</button>
+              </div>
+
+              <div class="todo-list">
+                ${ex.todos.map(t => `
+                  <div class="todo-item ${t.completed ? 'completed' : ''}">
+                    <input type="checkbox" class="todo-checkbox" ${t.completed ? 'checked' : ''} onchange="toggleTodo('${ex.id}', '${t.id}')">
+                    <span class="todo-text">${t.text}</span>
+                    <button class="btn-del-mini" title="Sil" onclick="deleteTodo('${ex.id}', '${t.id}')">✕</button>
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+
+            <div style="display:flex; justify-content:flex-end; border-top:1px solid var(--surface-border); padding-top:0.75rem;">
+              <button class="btn btn-danger btn-sm" onclick="deleteExam('${ex.id}')">Sınav Programını Sil</button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    // =========================================================
+    // 2. DERSLER VE NOTLAR (YENİ BÖLÜM)
+    // =========================================================
+    function openNewCourseModal() {
+      document.getElementById('cCode').value = '';
+      document.getElementById('cName').value = '';
+      document.getElementById('newCourseModal').classList.add('open');
+    }
+
+    function closeNewCourseModal() {
+      document.getElementById('newCourseModal').classList.remove('open');
+    }
+
+    function saveNewCourse() {
+      const code = document.getElementById('cCode').value.trim() || 'DERS';
+      const name = document.getElementById('cName').value.trim();
+
+      if (!name) {
+        alert("Lütfen dersin adını giriniz.");
+        return;
+      }
+
+      const newId = 'crs_' + Date.now();
+      appState.courses.push({
+        id: newId,
+        code,
+        name,
+        entries: []
+      });
+
+      appState.activeCourseId = newId;
+      saveState();
+      closeNewCourseModal();
+      renderCourses();
+    }
+
+    function selectCourse(courseId) {
+      appState.activeCourseId = courseId;
+      renderCourses();
+    }
+
+    function deleteActiveCourse() {
+      const course = appState.courses.find(c => c.id === appState.activeCourseId);
+      if (!course) return;
+
+      if (confirm(`"${course.name}" dersini ve içindeki tüm ders notlarını silmek istediğinize emin misiniz?`)) {
+        appState.courses = appState.courses.filter(c => c.id !== appState.activeCourseId);
+        if (appState.courses.length > 0) {
+          appState.activeCourseId = appState.courses[0].id;
+        } else {
+          appState.activeCourseId = null;
+        }
+        saveState();
+        renderCourses();
+      }
+    }
+
+    function openNewNoteModal() {
+      if (!appState.courses || appState.courses.length === 0) {
+        alert("Önce en az bir ders eklemelisiniz.");
+        return;
+      }
+
+      const select = document.getElementById('nCourseSelect');
+      select.innerHTML = appState.courses.map(c => `
+        <option value="${c.id}" ${c.id === appState.activeCourseId ? 'selected' : ''}>${c.code} - ${c.name}</option>
+      `).join('');
+
+      document.getElementById('nTitle').value = '';
+      document.getElementById('nDate').value = new Date().toISOString().slice(0, 10);
+      document.getElementById('nContent').value = '';
+      document.getElementById('newNoteModal').classList.add('open');
+    }
+
+    function closeNewNoteModal() {
+      document.getElementById('newNoteModal').classList.remove('open');
+    }
+
+    function saveNewNote() {
+      const courseId = document.getElementById('nCourseSelect').value;
+      const title = document.getElementById('nTitle').value.trim();
+      const date = document.getElementById('nDate').value;
+      const content = document.getElementById('nContent').value.trim();
+
+      if (!title || !content) {
+        alert("Lütfen girdi başlığı ve not içeriğini doldurunuz.");
+        return;
+      }
+
+      const course = appState.courses.find(c => c.id === courseId);
+      if (course) {
+        course.entries.unshift({
+          id: 'ent_' + Date.now(),
+          title,
+          date: date || new Date().toISOString().slice(0, 10),
+          content
+        });
+
+        appState.activeCourseId = courseId;
+        saveState();
+        closeNewNoteModal();
+        renderCourses();
+      }
+    }
+
+    function toggleEntryAccordion(entryId) {
+      const item = document.getElementById(`entryItem_${entryId}`);
+      if (item) {
+        item.classList.toggle('expanded');
+      }
+    }
+
+    function deleteNoteEntry(courseId, entryId, event) {
+      event.stopPropagation();
+      if (confirm("Bu ders notu girdisini silmek istediğinize emin misiniz?")) {
+        const course = appState.courses.find(c => c.id === courseId);
+        if (course) {
+          course.entries = course.entries.filter(e => e.id !== entryId);
+          saveState();
+          renderCourses();
+        }
+      }
+    }
+
+    function renderCourses() {
+      const listContainer = document.getElementById('coursesList');
+      const activeCode = document.getElementById('activeCourseCode');
+      const activeName = document.getElementById('activeCourseName');
+      const accordion = document.getElementById('entriesAccordion');
+
+      if (!appState.courses || appState.courses.length === 0) {
+        listContainer.innerHTML = `<div style="font-size:0.8rem; color:var(--text-dim);">Kayıtlı ders yok.</div>`;
+        activeCode.textContent = "—";
+        activeName.textContent = "Lütfen bir ders ekleyin";
+        accordion.innerHTML = `
+          <div class="empty-state">
+            <div class="empty-icon">📚</div>
+            <h3>Ders Listeniz Boş</h3>
+            <p>Yukarıdaki "Yeni Ders Ekle" butonu ile ilk dersinizi oluşturabilirsiniz.</p>
+          </div>
+        `;
+        return;
+      }
+
+      if (!appState.activeCourseId || !appState.courses.some(c => c.id === appState.activeCourseId)) {
+        appState.activeCourseId = appState.courses[0].id;
+      }
+
+      const activeCourse = appState.courses.find(c => c.id === appState.activeCourseId);
+
+      // Render Sidebar Courses
+      listContainer.innerHTML = appState.courses.map(c => `
+        <div class="course-pill ${c.id === appState.activeCourseId ? 'active' : ''}" onclick="selectCourse('${c.id}')">
+          <div>
+            <div class="course-pill-name">${c.name}</div>
+            <div class="course-pill-code">${c.code} · ${c.entries.length} Not</div>
+          </div>
+        </div>
+      `).join('');
+
+      // Header of Active Course
+      activeCode.textContent = activeCourse.code;
+      activeName.textContent = activeCourse.name;
+
+      // Render Entries (Accordion with Search)
+      const noteSearch = (document.getElementById('noteSearchInput')?.value || '').toLowerCase();
+      const filteredEntries = activeCourse.entries.filter(ent => {
+        return !noteSearch ||
+          ent.title.toLowerCase().includes(noteSearch) ||
+          ent.content.toLowerCase().includes(noteSearch) ||
+          ent.date.includes(noteSearch);
+      });
+
+      if (activeCourse.entries.length === 0) {
+        accordion.innerHTML = `
+          <div class="empty-state">
+            <div class="empty-icon">📝</div>
+            <h3>Bu Derste Henüz Not Girdisi Yok</h3>
+            <p>"Bu Derse Not / Girdi Ekle" butonuna basarak başlık ve tarih ile yeni notlarınızı ekleyebilirsiniz.</p>
+          </div>
+        `;
+        return;
+      }
+
+      if (filteredEntries.length === 0) {
+        accordion.innerHTML = `
+          <div class="empty-state">
+            <div class="empty-icon">🔍</div>
+            <h3>Aradığınız Kriterde Not Bulunamadı</h3>
+            <p>"${noteSearch}" kelimesini içeren bir ders notu veya başlık yok.</p>
+          </div>
+        `;
+        return;
+      }
+
+      accordion.innerHTML = filteredEntries.map(ent => `
+        <div class="note-entry-item" id="entryItem_${ent.id}">
+          <div class="note-entry-header" onclick="toggleEntryAccordion('${ent.id}')">
+            <div class="note-entry-title">
+              <span class="note-entry-chevron">▼</span>
+              <span>${ent.title}</span>
+            </div>
+            <div style="display:flex; align-items:center; gap:0.5rem;">
+              <span class="note-entry-date">📅 ${ent.date}</span>
+              <button class="btn btn-secondary btn-sm" style="padding:0.2rem 0.55rem; font-size:0.75rem;" title="Notu Kopyala" onclick="copyNoteContent('${ent.id}', event)">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                Kopyala
+              </button>
+              <button class="btn-del-mini" title="Notu Sil" onclick="deleteNoteEntry('${activeCourse.id}', '${ent.id}', event)">✕</button>
+            </div>
+          </div>
+          <div class="note-entry-body">${ent.content}</div>
+        </div>
+      `).join('');
+    }
+
+    // =========================================================
+    // 3. TEORİ VE ALINTILAR KASASI (DROPDOWN KALDIRILDI)
+    // =========================================================
+    function openTheoryModal() {
+      document.getElementById('thTitle').value = '';
+      document.getElementById('thTheorist').value = '';
+      document.getElementById('thSource').value = '';
+      document.getElementById('thQuote').value = '';
+      document.getElementById('thAnalysis').value = '';
+      document.getElementById('thTags').value = '';
+      document.getElementById('theoryModal').classList.add('open');
+    }
+
+    function closeTheoryModal() {
+      document.getElementById('theoryModal').classList.remove('open');
+    }
+
+    function saveTheoryCard() {
+      const title = document.getElementById('thTitle').value.trim();
+      const theorist = document.getElementById('thTheorist').value.trim();
+      const source = document.getElementById('thSource').value.trim();
+      const quote = document.getElementById('thQuote').value.trim();
+      const analysis = document.getElementById('thAnalysis').value.trim();
+      const tagsRaw = document.getElementById('thTags').value.trim();
+
+      if (!title || !quote) {
+        alert("Lütfen en azından bir kavram başlığı ve alıntı giriniz.");
+        return;
+      }
+
+      const tags = tagsRaw.split(',').map(t => t.trim()).filter(Boolean);
+
+      appState.theories.unshift({
+        id: 'th_' + Date.now(),
+        title,
+        theorist: theorist || 'Genel Teori',
+        source: source || 'Makale/Not',
+        quote,
+        analysis: analysis || '—',
+        tags: tags.length ? tags : ['#sosyalbilimler']
+      });
+
+      saveState();
+      closeTheoryModal();
+      renderVault();
+    }
+
+    function deleteTheory(id) {
+      if (confirm("Bu kuramsal notu silmek istediğinize emin misiniz?")) {
+        appState.theories = appState.theories.filter(t => t.id !== id);
+        saveState();
+        renderVault();
+      }
+    }
+
+    function renderVault() {
+      const grid = document.getElementById('theoryGrid');
+      const search = (document.getElementById('theorySearch')?.value || '').toLowerCase();
+
+      const filtered = appState.theories.filter(t => {
+        return !search ||
+          t.title.toLowerCase().includes(search) ||
+          t.theorist.toLowerCase().includes(search) ||
+          t.source.toLowerCase().includes(search) ||
+          t.quote.toLowerCase().includes(search) ||
+          t.analysis.toLowerCase().includes(search) ||
+          t.tags.some(tag => tag.toLowerCase().includes(search));
+      });
+
+      if (filtered.length === 0) {
+        grid.innerHTML = `
+          <div class="empty-state">
+            <div class="empty-icon">📖</div>
+            <h3>Kayıtlı Alıntı / Not Bulunamadı</h3>
+            <p>Aradığınız kritere uygun not yok veya henüz yeni bir kesit eklemediniz.</p>
+          </div>
+        `;
+        return;
+      }
+
+      grid.innerHTML = filtered.map(t => `
+        <div class="theory-card">
+          <div>
+            <span class="theorist-badge">${t.theorist}</span>
+            <h3 class="theory-title" style="margin-top:0.4rem;">${t.title}</h3>
+            <div class="theory-source">${t.source}</div>
+          </div>
+
+          <div class="quote-box">"${t.quote}"</div>
+
+          <div class="commentary-box">
+            <div class="commentary-label">Kavramsal Çözümleme & Yorum:</div>
+            <div>${t.analysis}</div>
+          </div>
+
+          <div class="tag-list">
+            ${t.tags.map(tag => `<span class="tag-item">${tag}</span>`).join('')}
+          </div>
+
+          <div style="display:flex; justify-content:space-between; align-items:center; border-top:1px solid rgba(255,255,255,0.04); padding-top:0.6rem;">
+            <button class="btn btn-secondary btn-sm" onclick="copyCitation('${t.id}')" title="Metin ve künyeyi panoya kopyala">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+              Künyeyle Kopyala
+            </button>
+            <button class="btn btn-danger btn-sm" onclick="deleteTheory('${t.id}')">Sil</button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // =========================================================
+    // 4. RSVP HIZLI OKUMA & FEYNMAN SAYACI
+    // =========================================================
+    let rsvpInterval = null;
+    let rsvpWords = [];
+    let rsvpIndex = 0;
+    let isRsvpRunning = false;
+
+    function toggleRsvp() {
+      const btn = document.getElementById('rsvpBtn');
+      const display = document.getElementById('rsvpWord');
+
+      if (isRsvpRunning) {
+        clearInterval(rsvpInterval);
+        isRsvpRunning = false;
+        btn.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg> Devam Et`;
+        return;
+      }
+
+      const text = document.getElementById('rsvpText').value.trim();
+      if (!text) {
+        alert("Lütfen okunacak bir metin girin.");
+        return;
+      }
+
+      rsvpWords = text.split(/\s+/).filter(Boolean);
+      if (rsvpIndex >= rsvpWords.length) rsvpIndex = 0;
+
+      const speedWpm = parseInt(document.getElementById('rsvpSpeed').value) || 350;
+      const intervalMs = Math.round((60 / speedWpm) * 1000);
+
+      isRsvpRunning = true;
+      btn.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg> Duraklat`;
+
+      rsvpInterval = setInterval(() => {
+        if (rsvpIndex < rsvpWords.length) {
+          display.textContent = rsvpWords[rsvpIndex];
+          rsvpIndex++;
+        } else {
+          clearInterval(rsvpInterval);
+          isRsvpRunning = false;
+          display.textContent = "Tamamlandı!";
+          btn.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg> Baştan Oku`;
+          rsvpIndex = 0;
+        }
+      }, intervalMs);
+    }
+
+    let timerTotalSecs = 25 * 60;
+    let timerRemaining = timerTotalSecs;
+    let timerInterval = null;
+    let isTimerRunning = false;
+
+    function formatTime(s) {
+      const m = Math.floor(s / 60);
+      const sec = s % 60;
+      return `${String(m).padStart(2, '0')}:${String(sec).padStart(2, '0')}`;
+    }
+
+    function toggleTimer() {
+      const btn = document.getElementById('timerStartBtn');
+      if (isTimerRunning) {
+        clearInterval(timerInterval);
+        isTimerRunning = false;
+        btn.textContent = "Devam Et";
+      } else {
+        isTimerRunning = true;
+        btn.textContent = "Duraklat";
+        timerInterval = setInterval(() => {
+          timerRemaining--;
+          document.getElementById('timerDigits').textContent = formatTime(timerRemaining);
+
+          if (timerRemaining <= 0) {
+            clearInterval(timerInterval);
+            isTimerRunning = false;
+            btn.textContent = "Seansı Başlat";
+            document.getElementById('feynmanBox').style.display = 'flex';
+            document.getElementById('feynmanBox').scrollIntoView({ behavior: 'smooth' });
+          }
+        }, 1000);
+      }
+    }
+
+    function resetTimer() {
+      clearInterval(timerInterval);
+      isTimerRunning = false;
+      timerRemaining = timerTotalSecs;
+      document.getElementById('timerDigits').textContent = formatTime(timerRemaining);
+      document.getElementById('timerStartBtn').textContent = "Seansı Başlat";
+      document.getElementById('feynmanBox').style.display = 'none';
+    }
+
+    function saveFeynmanSummary() {
+      const text = document.getElementById('feynmanSummaryInput').value.trim();
+      if (!text) {
+        alert("Lütfen özetinizi yazınız.");
+        return;
+      }
+
+      appState.theories.unshift({
+        id: 'th_' + Date.now(),
+        title: 'Feynman Çalışma Özeti',
+        theorist: 'Bireysel Özet',
+        source: 'Derin Okuma Seansı',
+        quote: text,
+        analysis: '25 dakikalık odaklanma seansı sonunda çıkarılan yalınlaştırılmış ana fikir.',
+        tags: ['#feynman', '#özet']
+      });
+
+      saveState();
+      alert("Özetiniz Teori ve Alıntılar Kasasına başarıyla kaydedildi!");
+      document.getElementById('feynmanSummaryInput').value = '';
+      document.getElementById('feynmanBox').style.display = 'none';
+    }
+
+    // =========================================================
+    // YEDEKLEME (EXPORT / IMPORT)
+    // =========================================================
+    function exportData() {
+      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(appState, null, 2));
+      const downloadAnchor = document.createElement('a');
+      downloadAnchor.setAttribute("href", dataStr);
+      downloadAnchor.setAttribute("download", `semiocraft_backup_${new Date().toISOString().slice(0,10)}.json`);
+      document.body.appendChild(downloadAnchor);
+      downloadAnchor.click();
+      downloadAnchor.remove();
+    }
+
+    function importData(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function(evt) {
+        try {
+          const imported = JSON.parse(evt.target.result);
+          if (imported.exams && imported.theories) {
+            appState = imported;
+            saveState();
+            renderExams();
+            renderCourses();
+            renderVault();
+            alert("Yedek başarıyla geri yüklendi!");
+          } else {
+            alert("Geçersiz yedek dosyası formatı.");
+          }
+        } catch(err) {
+          alert("Hata: " + err.message);
+        }
+      };
+      reader.readAsText(file);
+    }
+
+    // =========================================================
+    // QoL: TOAST BİLDİRİMİ & PANOYA KOPYALAMA
+    // =========================================================
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      const toastMsg = document.getElementById('toastMsg');
+      if (!toast || !toastMsg) return;
+      toastMsg.textContent = msg;
+      toast.style.display = 'flex';
+      clearTimeout(window.toastTimer);
+      window.toastTimer = setTimeout(() => {
+        toast.style.display = 'none';
+      }, 2400);
+    }
+
+    function copyCitation(id) {
+      const item = appState.theories.find(t => t.id === id);
+      if (!item) return;
+      const citationText = `"${item.quote}" — ${item.theorist}, ${item.source}`;
+      navigator.clipboard.writeText(citationText).then(() => {
+        showToast("Alıntı ve künye panoya kopyalandı!");
+      }).catch(() => {
+        // Fallback
+        const ta = document.createElement('textarea');
+        ta.value = citationText;
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand('copy');
+        document.body.removeChild(ta);
+        showToast("Alıntı ve künye panoya kopyalandı!");
+      });
+    }
+
+    function copyNoteContent(id, event) {
+      if (event) event.stopPropagation();
+      let found = null;
+      for (const c of appState.courses) {
+        const e = c.entries.find(ent => ent.id === id);
+        if (e) { found = e; break; }
+      }
+      if (!found) return;
+      const noteText = `[${found.title} (${found.date})]\n\n${found.content}`;
+      navigator.clipboard.writeText(noteText).then(() => {
+        showToast("Ders notu panoya kopyalandı!");
+      }).catch(() => {
+        const ta = document.createElement('textarea');
+        ta.value = noteText;
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand('copy');
+        document.body.removeChild(ta);
+        showToast("Ders notu panoya kopyalandı!");
+      });
+    }
+
+    function closeAllModals() {
+      document.querySelectorAll('.modal-backdrop').forEach(m => m.classList.remove('open'));
+    }
+
+    // INIT
+    window.addEventListener('DOMContentLoaded', () => {
+      loadState();
+      renderExams();
+      renderCourses();
+      renderVault();
+
+      // QoL: ESC tuşu ile tüm modalları kapatma
+      window.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+          closeAllModals();
+        }
+      });
+
+      // QoL: Modal dışına (backdrop) tıklayınca kapatma
+      document.querySelectorAll('.modal-backdrop').forEach(backdrop => {
+        backdrop.addEventListener('click', (e) => {
+          if (e.target === backdrop) {
+            backdrop.classList.remove('open');
+          }
+        });
+      });
+
+      setInterval(() => {
+        if (document.getElementById('tab-exams').classList.contains('active')) {
+          renderExams();
+        }
+      }, 60000);
+    });
+  </script>
+
+  <!-- TOAST BİLDİRİM KUTUSU -->
+  <div id="toast" style="position:fixed; bottom:24px; right:24px; background:#1e293b; color:#f8fafc; border:1px solid var(--accent); padding:0.75rem 1.25rem; border-radius:var(--radius-md); box-shadow:0 12px 30px rgba(0,0,0,0.6); z-index:9999; display:none; align-items:center; gap:0.6rem; font-size:0.88rem; animation:fadeIn 0.2s ease;">
+    <span style="color:var(--success); font-weight:800;">✓</span>
+    <span id="toastMsg">Panoya kopyalandı!</span>
+  </div>
+</body>
+</html>
