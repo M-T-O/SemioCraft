@@ -200,43 +200,106 @@ GÖREVLER:
   }
 });
 
-// 3. Teori ve Metin Çözümleme Asistanı
+// 3. Teori ve Metin Çözümleme Asistanı (Gelişmiş Ekol ve Göstergebilimsel Mercek Seçenekleriyle)
+const THEORY_SCHOOL_PROMPTS: Record<string, { label: string; instruction: string }> = {
+  semiotics: {
+    label: 'Roland Barthes & Fransız Göstergebilimi',
+    instruction: `Sen Roland Barthes, Ferdinand de Saussure ve Umberto Eco ekolünden bir Göstergebilim (Semiyotik) uzmanısın.
+Metni düzanlam (denotation - ilk ve dolaysız anlam), yananlam (connotation - kültürel/tarihsel kodlar), mit oluşturma (mythologies - doğallaştırma ideolojisi) ve gösteren/gösterilen ilişkileri üzerinden çözümle.`,
+  },
+  frankfurt: {
+    label: 'Frankfurt Okulu & Eleştirel Teori',
+    instruction: `Sen Frankfurt Okulu (Adorno, Horkheimer, Benjamin, Habermas) uzmanısın.
+Metni kültür endüstrisi, meta fetişizmi, araçsal akıl, şeyleşme ve auranın yitimi kavramları üzerinden eleştir ve kitle kültürünün tahakküm mekanizmalarını açığa çıkar.`,
+  },
+  cultural_studies: {
+    label: 'Stuart Hall & Kültürel Çalışmalar',
+    instruction: `Sen Kültürel Çalışmalar ve Medya Sosyolojisi (Stuart Hall, Raymond Williams, Gramsci) uzmanısın.
+Metni hegemonya, kodlama/kodaçımlama (egemen, müzakereci, muhalif okuma pozisyonları), temsil politikaları ve kimlik inşası üzerinden analiz et.`,
+  },
+  foucault: {
+    label: 'Michel Foucault & Söylem Analizi',
+    instruction: `Sen Michel Foucault ekolünde bir Söylem Analizi ve İktidar Kuramları uzmanısın.
+Metni iktidar/bilgi (pouvoir-savoir), biyoiktidar, gözetim (panoptikon), öznelleştirme pratikleri ve kurumsal hakikat rejimleri ekseninde çözümle.`,
+  },
+  baudrillard: {
+    label: 'Jean Baudrillard & Simülasyon Kuramı',
+    instruction: `Sen Jean Baudrillard ve postmodern medya kuramları uzmanısın.
+Metni simülasyon, simulakrlar, hipergerçeklik, gösterge değeri ve imajın gerçekliği yutması kuramları ekseninde çözümle.`,
+  },
+  feminist_queer: {
+    label: 'Feminist & Kuir Medya Kuramları',
+    instruction: `Sen feminist ve toplumsal cinsiyet kuramcısı (Laura Mulvey, Judith Butler, bell hooks) gözüyle metni inceliyorsun.
+Eril bakış (male gaze), toplumsal cinsiyet performativitesi, heteronormatif temsil ve kesişimsellik (intersectionality) boyutlarını açığa çıkar.`,
+  },
+  general: {
+    label: 'Çok Boyutlu Eleştirel Sosyal Bilimler Sentezi',
+    instruction: `Sen disiplinlerarası bir sosyal bilimler ve iletişim kuramları analistisin.
+Tüm eleştirel kuramları harmanlayarak metnin epistemolojik, ideolojik ve ontolojik kodlarını çok boyutlu değerlendir.`,
+  },
+};
+
 app.post('/api/theory/analyze', async (req, res) => {
   try {
-    const { text = '' } = req.body;
+    const { text = '', school = 'semiotics', focusMode = 'deep_semiotics' } = req.body;
     if (!text.trim()) {
       return res.status(400).json({ error: 'Çözümlenecek metin boş olamaz.' });
     }
 
-    const prompt = `Aşağıdaki akademik metni, makale kesitini veya öğrenci notunu göstergebilimsel ve eleştirel sosyal bilimler açısından analiz et:
+    const schoolConfig = THEORY_SCHOOL_PROMPTS[school] || THEORY_SCHOOL_PROMPTS.semiotics;
+
+    const prompt = `Aşağıdaki metni "${schoolConfig.label}" kuramsal merceğinden ve "${focusMode}" odak açısıyla analiz et:
 METİN:
 """
 ${text}
 """
 
-GÖREVLER:
-- title: Bu metni özetleyen vurucu kavramsal başlık.
-- suggestedTheorists: Bu metinle doğrudan ilişkili 2-3 büyük kuramcı (örn: Roland Barthes, Theodor Adorno, Michel Foucault).
-- coreAnalysis: Metnin kuramsal çözümlemesi (ideolojik kodlar, güç ilişkileri, mitler veya temsil biçimleri).
-- suggestedTags: 3-5 etiket (#etiket formatında).
-- apaCitationHint: Eğer bir kaynaktan alıntı ise APA stilinde künye oluşturma önerisi.`;
+GÖREVLER VE İSTENEN ANALİZ ALANLARI:
+1. title: Bu çözümlemeyi özetleyen akademik, vurucu kavramsal başlık.
+2. selectedSchoolLabel: Seçilen ekolün tam adı ("${schoolConfig.label}").
+3. suggestedTheorists: Bu metinle doğrudan ilişkili 2-4 büyük kuramcı (örn: Roland Barthes, Stuart Hall, Theodor Adorno).
+4. denotation: Düzanlam (Görünürdeki, nesnel, doğrudan ve ilk anlam katmanı).
+5. connotation: Yananlam & Mitik Kodlar (Metnin alt metninde gizlenen ideolojik, kültürel ve simgesel kodlar).
+6. powerRelations: İktidar ve Hegemonya (Metnin meşrulaştırdığı veya sorguladığı güç ilişkileri ve temsil biçimleri).
+7. coreAnalysis: Seçilen kuramsal mercekten 2-3 paragraflık derinlemesine akademik çözümleme.
+8. counterTheorists: Bu çözümlemeye itiraz edebilecek veya zıt açıdan bakacak 1-2 karşı kuramcı ve temel eleştirileri.
+9. thesisApplicationTip: Öğrencinin bu kavramı tezinde, makalesinde veya sözlü sınavında nasıl kullanabileceğine dair 1-2 cümlelik pratik akademik tüyo.
+10. suggestedTags: 3-5 etiket (#etiket formatında).
+11. apaCitationHint: Eğer metin bir kaynaktan alıntı ise veya teze referans verilecekse APA 7 formatında künye/alıntı önerisi.`;
 
     const response = await generateWithRetry({
       model: 'gemini-3.8-flash',
       contents: prompt,
       config: {
-        systemInstruction: 'Sosyal bilimler ve iletişim kuramları analistisin. Türkçe yanıt ver.',
+        systemInstruction: `${schoolConfig.instruction}\nSosyal bilimler standartlarında adil, kavramsal netliği yüksek ve yapıcı bir üslupla Türkçe yanıt ver.`,
         responseMimeType: 'application/json',
         responseSchema: {
           type: Type.OBJECT,
           properties: {
             title: { type: Type.STRING },
+            selectedSchoolLabel: { type: Type.STRING },
             suggestedTheorists: { type: Type.ARRAY, items: { type: Type.STRING } },
-            coreAnalysis: { type: Type.STRING },
+            denotation: { type: Type.STRING, description: 'Düzanlam katmanı' },
+            connotation: { type: Type.STRING, description: 'Yananlam ve mitler' },
+            powerRelations: { type: Type.STRING, description: 'İktidar ve temsil ilişkileri' },
+            coreAnalysis: { type: Type.STRING, description: 'Detaylı kuramsal analiz' },
+            counterTheorists: { type: Type.ARRAY, items: { type: Type.STRING }, description: 'Zıt ve karşı kuramcılar' },
+            thesisApplicationTip: { type: Type.STRING, description: 'Tezde veya sınavda kullanım tüyosu' },
             suggestedTags: { type: Type.ARRAY, items: { type: Type.STRING } },
             apaCitationHint: { type: Type.STRING },
           },
-          required: ['title', 'suggestedTheorists', 'coreAnalysis', 'suggestedTags'],
+          required: [
+            'title',
+            'selectedSchoolLabel',
+            'suggestedTheorists',
+            'denotation',
+            'connotation',
+            'powerRelations',
+            'coreAnalysis',
+            'counterTheorists',
+            'thesisApplicationTip',
+            'suggestedTags',
+          ],
         },
       },
     });
